@@ -1,0 +1,1183 @@
+/* 
+  MOBILE RESPONSIVENESS AUDIT & STYLES (375px - 768px)
+  
+  Audit Summary:
+  1. Landing Page (/):
+     - Navbar: Center nav links & GitHub icon overflow on 375px. Fix: hide center links and GitHub icon, reduce padding to 16px.
+     - Hero: 420px fixed column + chrome demo breaks viewport width. Fix: 1 column grid, hide chrome demo and bottom stats bar, stack CTAs vertically, font-size clamp.
+     - Revision Section: Chrome demo overflows. Fix: hide chrome demo, center text, section padding 60px 24px.
+     - How It Works: 3-column grid overflows. Fix: 1 column grid, add horizontal separators.
+     - Science Section: 2-column grid overflows. Fix: 1 column grid, hide chrome chart, section padding 60px 24px.
+     - Capabilities: 2x2 grid overflows. Fix: 1 column grid, card padding 28px.
+     - FAQ Section: Padding & title size too large. Fix: padding 60px 24px, 36px title font size.
+     - Final CTA: Large wordmark & padding overflow. Fix: wordmark font size 72px, full-width CTA button.
+     - Footer: Horizontal flex overflows. Fix: flex-col center.
+  2. App Shell & Problems Table (/dashboard):
+     - Sidebar (240px fixed) takes full mobile screen. Fix: hide sidebar ([data-sidebar]), show bottom nav ([data-mobile-nav]), set main content margin-left to 0.
+     - Table columns (Star, Notes, Next Revision, Custom) overflow 375px screen width. Fix: hide secondary columns ([data-col]), truncate problem titles at 140px max-width, make tab bar scrollable, stack toolbar items vertically.
+  3. Daily Revision (/daily):
+     - Stats strip overflows. Fix: flex-wrap, smaller text.
+     - Header & problem list overflow. Fix: stack title & date, horizontal scroll for heatmap.
+  4. Auth Pages (/auth/login):
+     - 40% / 60% split screen overflows. Fix: hide left WebGL panel ([data-auth-left]), right panel 100% width.
+     - iOS auto-zoom on input focus. Fix: input, textarea, select font-size 16px !important.
+
+  ALL RULES IN THIS FILE ARE STRICTLY SCOPED INSIDE @media BLOCKS.
+  ZERO RULES EXIST OUTSIDE MEDIA QUERIES TO ENSURE 100% PIXEL-IDENTICAL DESKTOP BEHAVIOR.
+*/
+
+@media (max-width: 768px) {
+  /* ----------------------------------------------------
+     Global & Touch Targets & Input Zoom Prevention
+  ---------------------------------------------------- */
+  input, textarea, select {
+    font-size: 16px !important;
+  }
+
+  button, a, [role="button"] {
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  p a, span a, td a, th a, [data-inline-link], [data-heatmap-container] *, [data-heatmap-inner] *, [data-new-row="true"] *, .import-modal-container button, .import-modal-container a, [data-nav-theme], [data-hero-cta-btn], [data-hero-producthunt] {
+    min-height: auto !important;
+    min-width: auto !important;
+  }
+
+  /* ----------------------------------------------------
+     Landing Page — Navbar
+  ---------------------------------------------------- */
+  [data-nav-container] {
+    padding: 0 16px !important;
+  }
+
+  [data-nav-logo] {
+    transform: translateY(11px) !important;
+  }
+
+  [data-nav-center] {
+    display: none !important;
+  }
+
+  [data-nav-right] {
+    gap: 6px !important;
+  }
+
+  [data-nav-howtouse] {
+    display: inline-flex !important;
+    height: 28px !important;
+    padding: 0 8px !important;
+    font-size: 11px !important;
+    min-height: auto !important;
+    min-width: auto !important;
+  }
+
+  .nav-howtouse-label {
+    display: none !important;
+  }
+
+  [data-nav-github] {
+    display: inline-flex !important;
+    height: 28px !important;
+    padding: 0 8px !important;
+    font-size: 11px !important;
+    gap: 6px !important;
+    min-height: auto !important;
+    min-width: auto !important;
+  }
+
+  .nav-github-label {
+    display: none !important;
+  }
+
+  [data-nav-theme] {
+    display: inline-flex !important;
+    width: 28px !important;
+    height: 28px !important;
+    min-width: 28px !important;
+    min-height: 28px !important;
+    max-width: 28px !important;
+    max-height: 28px !important;
+    padding: 0 !important;
+    border-radius: 8px !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+
+  [data-nav-signin] {
+    height: 28px !important;
+    padding: 0 10px !important;
+    font-size: 11px !important;
+    min-height: auto !important;
+    min-width: auto !important;
+  }
+
+  /* ----------------------------------------------------
+     Landing Page — Hero
+  ---------------------------------------------------- */
+  .hero-v2-grid, [data-hero-grid] {
+    grid-template-columns: 1fr !important;
+    padding-left: 20px !important;
+    padding-right: 20px !important;
+    min-height: auto !important;
+  }
+
+  [data-hero-left] {
+    padding-right: 0 !important;
+    padding-top: 40px !important;
+    padding-bottom: 40px !important;
+    width: 100% !important;
+  }
+
+  [data-hero-right] {
+    display: none !important;
+  }
+
+  [data-hero-stats] {
+    display: none !important;
+  }
+
+  [data-hero-cta] {
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: wrap !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    gap: 10px !important;
+    width: 100% !important;
+    margin-bottom: 20px !important;
+  }
+
+  [data-hero-cta] a, [data-hero-cta] button {
+    width: auto !important;
+    min-width: auto !important;
+    text-align: left !important;
+    justify-content: center !important;
+  }
+
+  [data-hero-cta-btn] {
+    height: 38px !important;
+    min-height: 38px !important;
+    padding: 0 16px !important;
+    font-size: 13px !important;
+    border-radius: 8px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    flex-shrink: 0 !important;
+    white-space: nowrap !important;
+  }
+
+  [data-hero-producthunt] {
+    height: 38px !important;
+    min-height: 38px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    border-radius: 8px !important;
+    flex-shrink: 0 !important;
+    padding: 0 !important;
+  }
+
+  [data-hero-producthunt] img {
+    height: 38px !important;
+    width: auto !important;
+    border-radius: 8px !important;
+    display: block !important;
+  }
+
+  [data-hero-title] {
+    font-size: clamp(36px, 10vw, 52px) !important;
+  }
+
+  /* ----------------------------------------------------
+     Landing Page — Revision Section
+  ---------------------------------------------------- */
+  #daily-revision, #how-it-works, [data-revision-section] {
+    padding: 60px 24px !important;
+  }
+
+  [data-revision-chrome] {
+    display: none !important;
+  }
+
+  [data-revision-title] {
+    font-size: clamp(32px, 9vw, 48px) !important;
+  }
+
+  /* ----------------------------------------------------
+     Landing Page — How It Works
+  ---------------------------------------------------- */
+  #how-it-works > div, #how-it-works-steps > div {
+    padding: 60px 24px !important;
+  }
+
+  .how-it-works-v2, [data-how-it-works] {
+    grid-template-columns: 1fr !important;
+  }
+
+  .how-it-works-v2 > div {
+    padding: 24px 0 !important;
+    border-bottom: 1px solid var(--table-border) !important;
+  }
+
+  /* ----------------------------------------------------
+     Landing Page — Science Section
+  ---------------------------------------------------- */
+  #science, [data-science-section] {
+    padding: 60px 24px !important;
+  }
+
+  .science-grid, [data-science-grid] {
+    grid-template-columns: 1fr !important;
+    gap: 40px !important;
+  }
+
+  .science-chart, [data-science-chart] {
+    display: none !important;
+  }
+
+  /* ----------------------------------------------------
+     Landing Page — Capabilities
+  ---------------------------------------------------- */
+  #capabilities, [data-capabilities-section] {
+    padding: 0 24px 60px !important;
+  }
+
+  .capabilities-v2-grid, [data-capabilities-grid] {
+    grid-template-columns: 1fr !important;
+  }
+
+  .capability-card, [data-capability-card] {
+    padding: 28px 24px !important;
+  }
+
+  /* ----------------------------------------------------
+     Landing Page — FAQ Section
+  ---------------------------------------------------- */
+  [data-faq-section] {
+    padding: 60px 24px !important;
+  }
+
+  [data-faq-title] {
+    font-size: 36px !important;
+  }
+
+  /* ----------------------------------------------------
+     Landing Page — Final CTA & Footer
+  ---------------------------------------------------- */
+  [data-final-cta] {
+    padding: 60px 24px 0 !important;
+  }
+
+  [data-final-wordmark] {
+    font-size: 72px !important;
+    bottom: 0px !important;
+  }
+
+  [data-footer-container] {
+    flex-direction: column !important;
+    gap: 16px !important;
+    text-align: center !important;
+    padding: 24px 16px !important;
+  }
+
+  [data-footer-links] {
+    justify-content: center !important;
+  }
+
+  /* ----------------------------------------------------
+     App Shell — Sidebar & Mobile Navigation
+  ---------------------------------------------------- */
+  [data-sidebar] {
+    display: none !important;
+  }
+
+  [data-mobile-nav] {
+    display: flex !important;
+  }
+
+  [data-main-content] {
+    margin-left: 0 !important;
+    padding: 20px 16px 88px 16px !important;
+  }
+
+  /* ----------------------------------------------------
+     App Shell — Dashboard & Problems Table (Notion-style horizontal scroll)
+  ---------------------------------------------------- */
+  [data-dashboard-container] {
+    padding: 16px 12px 88px 12px !important;
+  }
+
+  [data-page-header] {
+    padding: 4px 0 16px 0 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+  }
+
+  [data-breadcrumb] {
+    font-size: 14px !important;
+  }
+
+  [data-download-button] {
+    display: none !important;
+  }
+
+  [data-new-problem-button] {
+    padding: 8px 14px !important;
+    font-size: 13px !important;
+    height: 36px !important;
+  }
+
+  /* Tab Bar */
+  [data-tab-bar-wrapper] {
+    position: relative !important;
+    border-bottom: 1px solid var(--table-border) !important;
+  }
+
+  [data-tab-bar-wrapper]::after {
+    content: '' !important;
+    position: absolute !important;
+    top: 0 !important;
+    right: 0 !important;
+    bottom: 1px !important;
+    width: 24px !important;
+    background: linear-gradient(to right, transparent, var(--background)) !important;
+    pointer-events: none !important;
+    z-index: 10 !important;
+  }
+
+  [data-tab-bar], [data-table-tabs] {
+    display: flex !important;
+    flex-direction: row !important;
+    overflow-x: auto !important;
+    white-space: nowrap !important;
+    -webkit-overflow-scrolling: touch !important;
+    scrollbar-width: none !important;
+    gap: 6px !important;
+    padding: 4px 16px 0 0 !important;
+    border-bottom: none !important;
+  }
+
+  [data-tab-bar]::-webkit-scrollbar, [data-table-tabs]::-webkit-scrollbar {
+    display: none !important;
+  }
+
+  [data-tab-item] {
+    flex-shrink: 0 !important;
+    padding: 7px 14px !important;
+    font-size: 13px !important;
+    white-space: nowrap !important;
+    border-radius: 0 !important;
+    transition: color 0.15s ease, box-shadow 0.15s ease !important;
+    background: transparent !important;
+  }
+
+  [data-tab-item][data-active="true"] {
+    color: var(--foreground) !important;
+    font-weight: 500 !important;
+    box-shadow: inset 0 -2px 0 var(--foreground) !important;
+  }
+
+  [data-tab-item][data-active="false"] {
+    color: var(--text-muted) !important;
+    background: transparent !important;
+    box-shadow: none !important;
+  }
+
+  [data-platform-filter-icons] {
+    display: none !important;
+  }
+
+  /* Toolbar */
+  [data-toolbar] {
+    padding: 0 0 12px 0 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 8px !important;
+  }
+
+  [data-table-toolbar] {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 8px !important;
+  }
+
+  [data-search-container] {
+    width: 100% !important;
+    position: relative !important;
+  }
+
+  [data-search-input] {
+    width: 100% !important;
+    height: 38px !important;
+    padding: 0 14px 0 38px !important;
+    font-size: 14px !important;
+    border-radius: 7px !important;
+    box-sizing: border-box !important;
+  }
+
+  [data-search-container] svg,
+  [data-search-container] [data-search-icon],
+  [data-search-input] svg,
+  [data-search-input] [data-search-icon] {
+    width: 15px !important;
+    height: 15px !important;
+    left: 12px !important;
+  }
+
+  [data-search-shortcut-hint] {
+    display: none !important;
+  }
+
+  [data-filter-sort-row] {
+    display: flex !important;
+    flex-direction: row !important;
+    gap: 8px !important;
+    width: 100% !important;
+  }
+
+  [data-filter-sort-row] > * {
+    flex: 1 !important;
+    width: 50% !important;
+  }
+
+  [data-filter-sort-row] button {
+    width: 100% !important;
+    justify-content: space-between !important;
+    height: 40px !important;
+  }
+
+  [data-redundant-sort-icon-button] {
+    display: none !important;
+  }
+
+  /* Fix 1 & Fix 6 — Table Horizontal Scroll Container & Bottom Nav Overlap */
+  [data-table-container], [data-table-scroll-container] {
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    scrollbar-width: thin !important;
+    scrollbar-color: var(--input-border) transparent !important;
+    padding-bottom: 72px !important;
+  }
+
+  [data-table-container]::-webkit-scrollbar, [data-table-scroll-container]::-webkit-scrollbar {
+    height: 4px !important;
+  }
+  [data-table-container]::-webkit-scrollbar-thumb, [data-table-scroll-container]::-webkit-scrollbar-thumb {
+    background: var(--input-border) !important;
+    border-radius: 2px !important;
+  }
+
+  [data-problems-table] {
+    min-width: 900px !important;
+  }
+
+  /* Fix 1 & Fix 2 — Tightened Row Height & Compact Pills/Status on Mobile */
+  [data-problems-table] th {
+    font-size: 10px !important;
+    padding: 4px 8px !important;
+    height: 28px !important;
+  }
+
+  [data-problems-table] td {
+    padding: 4px 8px !important;
+    font-size: 13px !important;
+  }
+
+  [data-problems-table] tr {
+    height: 36px !important;
+  }
+
+  [data-problems-table] [data-cell="platform"] {
+    width: 36px !important;
+  }
+
+  [data-problems-table] [data-cell="platform"] img,
+  [data-problems-table] [data-cell="platform"] svg {
+    width: 16px !important;
+    height: 16px !important;
+  }
+
+  [data-problems-table] [data-difficulty-pill],
+  [data-problems-table] [data-topic-pill] {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    height: 20px !important;
+    min-height: 20px !important;
+    max-height: 20px !important;
+    padding: 0 !important;
+    background: transparent !important;
+    border: none !important;
+  }
+
+  [data-problems-table] [data-difficulty-pill] [data-pill],
+  [data-problems-table] [data-topic-pill] [data-pill],
+  [data-problems-table] [data-pill] {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: fit-content !important;
+    max-width: fit-content !important;
+    height: 20px !important;
+    min-height: 20px !important;
+    max-height: 20px !important;
+    font-size: 10px !important;
+    font-weight: 600 !important;
+    padding: 0 6px !important;
+    line-height: 1 !important;
+    border-radius: 4px !important;
+    white-space: nowrap !important;
+    box-sizing: border-box !important;
+  }
+
+  /* Ensure the parent table cell and wrapper div don't force the pill to stretch */
+  [data-problems-table] td[data-cell="difficulty"],
+  [data-problems-table] td[data-cell="topic"] {
+    width: auto !important;
+    max-width: 90px !important;
+    height: 44px !important;
+    vertical-align: middle !important;
+  }
+
+  [data-problems-table] td[data-cell="difficulty"] > div,
+  [data-problems-table] td[data-cell="topic"] > div {
+    display: inline-flex !important;
+    width: fit-content !important;
+    max-width: fit-content !important;
+    height: 20px !important;
+    align-items: center !important;
+  }
+
+  [data-problems-table] [data-status-dot] {
+    width: 5px !important;
+    height: 5px !important;
+  }
+
+  [data-problems-table] [data-status-label] {
+    font-size: 10px !important;
+  }
+
+  /* New Row Mobile Action Buttons */
+  [data-new-row="true"] td {
+    height: 40px !important;
+  }
+
+  [data-new-row="true"] button,
+  [data-platform-btn],
+  [data-platform-select-btn],
+  [data-new-row-submit],
+  [data-new-row-cancel] {
+    min-height: auto !important;
+    min-width: auto !important;
+  }
+
+  [data-platform-select-btn] {
+    width: 22px !important;
+    height: 22px !important;
+    min-width: 22px !important;
+    min-height: 22px !important;
+    padding: 0 !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 13px !important;
+    line-height: 1 !important;
+    border-radius: 4px !important;
+    background: var(--popover) !important;
+    border: 1px solid var(--input-border) !important;
+    color: var(--text-dim) !important;
+  }
+
+  [data-platform-btn] {
+    width: 22px !important;
+    height: 22px !important;
+    min-width: 22px !important;
+    min-height: 22px !important;
+    padding: 0 !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    background: transparent !important;
+    border: none !important;
+  }
+
+  [data-new-row-submit] {
+    width: 22px !important;
+    height: 22px !important;
+    min-width: 22px !important;
+    min-height: 22px !important;
+    padding: 0 !important;
+    background: var(--input-bg) !important;
+    border: 1px solid var(--input-border) !important;
+    color: var(--success) !important;
+    border-radius: 4px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    cursor: pointer !important;
+  }
+
+  [data-new-row-cancel] {
+    width: 30px !important;
+    height: 30px !important;
+    min-width: 30px !important;
+    min-height: 30px !important;
+    padding: 0 !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    background: var(--popover) !important;
+    border: 1px solid var(--input-border) !important;
+    border-radius: 6px !important;
+    color: var(--text-muted) !important;
+  }
+
+  /* Row Selection Floating Action Bar — Ultra Compact Mobile Bar */
+  [data-selection-bar] {
+    bottom: 74px !important;
+    max-width: calc(100vw - 24px) !important;
+    width: max-content !important;
+    height: 28px !important;
+    min-height: 28px !important;
+    max-height: 28px !important;
+    padding: 0 8px !important;
+    gap: 4px !important;
+    border-radius: 6px !important;
+    background: var(--popover) !important;
+    border: 1px solid var(--input-border) !important;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.8) !important;
+    z-index: 950 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+  }
+
+  [data-selection-count] {
+    font-size: 10px !important;
+    font-weight: 600 !important;
+    line-height: 1 !important;
+    color: var(--text-dim) !important;
+    white-space: nowrap !important;
+  }
+
+  [data-selection-divider] {
+    height: 11px !important;
+    width: 1px !important;
+    margin: 0 1px !important;
+    background: var(--input-border) !important;
+    flex-shrink: 0 !important;
+  }
+
+  [data-selection-actions] {
+    display: flex !important;
+    align-items: center !important;
+    gap: 3px !important;
+  }
+
+  [data-selection-actions] button[data-selection-btn="mastered"] {
+    background: var(--easy-bg) !important;
+    color: var(--easy-text) !important;
+    border: 1px solid var(--easy-border) !important;
+  }
+
+  [data-selection-actions] button[data-selection-btn="active"] {
+    background: var(--popover) !important;
+    color: var(--foreground) !important;
+    border: 1px solid var(--input-border) !important;
+  }
+
+  [data-selection-actions] button[data-selection-btn="retired"] {
+    background: var(--medium-bg) !important;
+    color: var(--medium-text) !important;
+    border: 1px solid var(--medium-border) !important;
+  }
+
+  [data-selection-actions] button,
+  [data-selection-delete] {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    height: 20px !important;
+    min-height: 20px !important;
+    max-height: 20px !important;
+    padding: 0 6px !important;
+    font-size: 10px !important;
+    font-weight: 600 !important;
+    line-height: 1 !important;
+    border-radius: 4px !important;
+    white-space: nowrap !important;
+    box-sizing: border-box !important;
+  }
+
+  [data-selection-delete] {
+    background: var(--hard-bg) !important;
+    color: var(--hard-text) !important;
+    border: 1px solid var(--hard-border) !important;
+    padding: 0 5px !important;
+  }
+
+  [data-selection-delete] svg {
+    width: 10px !important;
+    height: 10px !important;
+  }
+
+  [data-selection-close] {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    height: 20px !important;
+    width: 18px !important;
+    padding: 0 !important;
+    font-size: 12px !important;
+    color: #666666 !important;
+    line-height: 1 !important;
+  }
+
+  /* ----------------------------------------------------
+     App Shell — Daily Revision & Contribution Heatmap
+  ---------------------------------------------------- */
+  [data-daily-header] {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 4px !important;
+    margin-bottom: 12px !important;
+  }
+
+  [data-stats-strip] {
+    flex-wrap: wrap !important;
+    gap: 8px !important;
+  }
+
+  /* Heatmap Card & Grid Fixes on Mobile */
+  [data-heatmap-wrapper] {
+    padding: 14px 12px !important;
+    border-radius: 8px !important;
+  }
+
+  [data-heatmap-header] {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 8px !important;
+    margin-bottom: 14px !important;
+  }
+
+  [data-heatmap-header] > div {
+    width: 100% !important;
+    justify-content: space-between !important;
+  }
+
+  [data-heatmap-container] {
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    padding-bottom: 8px !important;
+    scrollbar-width: thin !important;
+    scrollbar-color: #2a2a2a transparent !important;
+    width: 100% !important;
+  }
+
+  [data-heatmap-container] button,
+  [data-heatmap-container] [role="button"],
+  [data-heatmap-container] [data-slot="tooltip-trigger"],
+  [data-heatmap-container] div {
+    min-height: auto !important;
+    min-width: auto !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    border: none !important;
+  }
+
+  [data-heatmap-inner] {
+    margin: 0 !important;
+    width: fit-content !important;
+  }
+
+  /* ----------------------------------------------------
+     App Shell — Settings Page
+  ---------------------------------------------------- */
+  [data-settings-container] {
+    padding: 16px 12px 72px 12px !important;
+    width: 100% !important;
+  }
+
+  [data-settings-header] {
+    margin-bottom: 18px !important;
+  }
+
+  [data-settings-header] h1 {
+    font-size: 20px !important;
+    margin-bottom: 4px !important;
+  }
+
+  [data-settings-header] p {
+    font-size: 12px !important;
+    line-height: 1.4 !important;
+  }
+
+  [data-settings-cards] {
+    gap: 14px !important;
+    width: 100% !important;
+  }
+
+  [data-settings-card] {
+    padding: 16px 14px !important;
+    border-radius: 8px !important;
+    width: 100% !important;
+  }
+
+  [data-settings-card] > div:first-child {
+    margin-bottom: 14px !important;
+  }
+
+  [data-settings-avatar-row] {
+    gap: 12px !important;
+    margin-bottom: 16px !important;
+  }
+
+  [data-settings-avatar] {
+    width: 44px !important;
+    height: 44px !important;
+    font-size: 17px !important;
+    flex-shrink: 0 !important;
+  }
+
+  [data-settings-form] {
+    max-width: 100% !important;
+    gap: 14px !important;
+  }
+
+  [data-display-name-row] {
+    display: flex !important;
+    gap: 8px !important;
+    width: 100% !important;
+  }
+
+  [data-display-name-row] input {
+    flex: 1 !important;
+    height: 38px !important;
+    padding: 0 10px !important;
+    font-size: 14px !important;
+  }
+
+  [data-display-name-row] button {
+    height: 38px !important;
+    min-height: 38px !important;
+    padding: 0 14px !important;
+    font-size: 12.5px !important;
+    white-space: nowrap !important;
+  }
+
+  [data-email-input] {
+    height: 38px !important;
+    padding: 0 10px !important;
+    font-size: 13.5px !important;
+  }
+
+  [data-sign-out-btn] {
+    width: 100% !important;
+    height: 38px !important;
+    min-height: 38px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 12.5px !important;
+    padding: 0 !important;
+  }
+
+  [data-platform-trigger] {
+    height: 38px !important;
+    min-height: 38px !important;
+    padding: 0 12px !important;
+  }
+
+  [data-daily-target-grid] {
+    display: grid !important;
+    grid-template-columns: repeat(4, 1fr) !important;
+    gap: 6px !important;
+    width: 100% !important;
+  }
+
+  [data-daily-target-grid] button {
+    height: 34px !important;
+    min-height: 34px !important;
+    padding: 0 2px !important;
+    font-size: 11.5px !important;
+    white-space: nowrap !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+
+  [data-export-btn] {
+    width: 100% !important;
+    height: 40px !important;
+    min-height: 40px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 13px !important;
+    padding: 0 !important;
+  }
+
+  /* ----------------------------------------------------
+     Auth Pages — Login / Signup
+  ---------------------------------------------------- */
+  [data-auth-container] {
+    height: auto !important;
+    min-height: 100vh !important;
+    overflow-y: auto !important;
+    flex-direction: column !important;
+  }
+
+  [data-auth-left] {
+    display: none !important;
+  }
+
+  [data-auth-right] {
+    width: 100% !important;
+    height: auto !important;
+    min-height: 100vh !important;
+    padding: 16px !important;
+  }
+
+  [data-auth-card] {
+    height: auto !important;
+    min-height: auto !important;
+    padding: 28px 20px !important;
+    border-radius: 16px !important;
+    box-sizing: border-box !important;
+  }
+
+  [data-desktop-demo] {
+    display: none !important;
+  }
+
+  /* ----------------------------------------------------
+     Import Modal — Mobile Only (max-width: 768px)
+  ---------------------------------------------------- */
+  .import-modal-overlay {
+    padding: 8px !important;
+  }
+
+  .import-modal-container {
+    max-height: 94vh !important;
+    width: 100% !important;
+    border-radius: 8px !important;
+    overflow-x: hidden !important;
+  }
+
+  .import-modal-header {
+    padding: 11px 14px !important;
+  }
+
+  .import-modal-breadcrumb {
+    font-size: 11.5px !important;
+  }
+
+  .import-modal-step-tag {
+    font-size: 10px !important;
+  }
+
+  .import-modal-body {
+    padding: 14px 12px !important;
+    gap: 12px !important;
+    overflow-x: hidden !important;
+  }
+
+  .import-dropzone {
+    padding: 26px 12px !important;
+  }
+
+  .column-mapping-tabs {
+    gap: 12px !important;
+  }
+
+  .column-mapping-item {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 8px !important;
+    padding: 10px 10px !important;
+  }
+
+  .column-mapping-left {
+    padding-right: 0 !important;
+    width: 100% !important;
+  }
+
+  .column-mapping-right {
+    width: 100% !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+  }
+
+  .column-mapping-select {
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+    flex: 1 !important;
+  }
+
+  .strategy-card {
+    padding: 12px 10px !important;
+    gap: 10px !important;
+  }
+
+  .strategy-pace-box {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 8px !important;
+    padding: 8px 10px !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  .strategy-pace-label {
+    display: flex !important;
+    align-items: center !important;
+    gap: 6px !important;
+  }
+
+  .strategy-pace-controls {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    gap: 8px !important;
+    width: auto !important;
+    max-width: 100% !important;
+    flex-wrap: wrap !important;
+  }
+
+  .strategy-pace-presets {
+    display: flex !important;
+    align-items: center !important;
+    gap: 4px !important;
+    width: auto !important;
+    flex: none !important;
+  }
+
+  .strategy-pace-preset-btn {
+    min-height: 24px !important;
+    max-height: 24px !important;
+    min-width: 22px !important;
+    height: 24px !important;
+    padding: 0 7px !important;
+    font-size: 11px !important;
+    line-height: 22px !important;
+    border-radius: 4px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    flex: none !important;
+    width: auto !important;
+  }
+
+  .strategy-pace-stepper {
+    display: inline-flex !important;
+    align-items: center !important;
+    height: 24px !important;
+    min-height: 24px !important;
+    max-height: 24px !important;
+    border: 1px solid var(--import-counter-border) !important;
+    border-radius: 4px !important;
+    background: var(--import-counter-bg) !important;
+    width: auto !important;
+    flex: none !important;
+  }
+
+  .strategy-pace-stepper button {
+    min-height: 22px !important;
+    max-height: 22px !important;
+    min-width: 20px !important;
+    width: 20px !important;
+    height: 22px !important;
+    padding: 0 !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 12px !important;
+    line-height: 1 !important;
+    cursor: pointer !important;
+    flex: none !important;
+  }
+
+  .strategy-pace-stepper span {
+    min-width: 20px !important;
+    font-size: 11px !important;
+    text-align: center !important;
+    padding: 0 4px !important;
+    line-height: 22px !important;
+  }
+
+  .validation-card {
+    padding: 12px 12px !important;
+  }
+
+  .validation-ready-row {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 4px !important;
+  }
+}
+
+/* Compact Mobile (320px - 390px) */
+@media (max-width: 390px) {
+  [data-hero-cta] {
+    gap: 8px !important;
+  }
+
+  [data-hero-cta-btn] {
+    height: 36px !important;
+    min-height: 36px !important;
+    padding: 0 12px !important;
+    font-size: 12px !important;
+  }
+
+  [data-hero-producthunt] {
+    height: 36px !important;
+    min-height: 36px !important;
+  }
+
+  [data-hero-producthunt] img {
+    height: 36px !important;
+  }
+}
+
+/* Safety rule for desktop viewports */
+@media (min-width: 769px) {
+  [data-mobile-demo] {
+    display: none !important;
+  }
+}
+
+/* Tablet Optimizations (769px - 1024px) */
+@media (min-width: 769px) and (max-width: 1024px) {
+  [data-auth-left] {
+    display: none !important;
+  }
+
+  [data-auth-right] {
+    width: 100% !important;
+    padding: 24px 16px !important;
+  }
+
+  [data-col="notes"] {
+    display: none !important;
+  }
+
+  [data-sidebar] {
+    width: 200px !important;
+    min-width: 200px !important;
+  }
+
+  [data-main-content] {
+    margin-left: 200px !important;
+  }
+}

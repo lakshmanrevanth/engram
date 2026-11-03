@@ -1,0 +1,201 @@
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "rhel-openssl-3.0.x"]
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+enum Platform {
+  LEETCODE
+  CODEFORCES
+  GFG
+  HACKERRANK
+  CODECHEF
+  SYSTEM_DESIGN
+}
+
+enum Difficulty {
+  EASY
+  MEDIUM
+  HARD
+}
+
+enum ProblemStatus {
+  ACTIVE
+  MASTERED
+  RETIRED
+}
+
+enum Confidence {
+  CLEAN
+  SHAKY
+  STRUGGLED
+}
+
+enum RevisionType {
+  REGULAR
+  RECHECK
+}
+
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  emailVerified DateTime?
+  name          String?
+  image         String?
+  password      String?
+  createdAt     DateTime  @default(now())
+
+  // Set whenever the password changes; sessions issued before it are rejected.
+  passwordChangedAt DateTime?
+
+  // Preferences
+  timezone         String?
+  dailyGoal        Int      @default(5)
+  defaultPlatform  Platform @default(LEETCODE)
+  ladderDays       Int[]    @default([3, 7, 14, 30])
+  remindersEnabled Boolean  @default(false)
+  reminderHour     Int      @default(9)
+  lastReminderAt   DateTime?
+  goalBasedStreak  Boolean  @default(false)
+
+  problems  Problem[]
+  lists     ProblemList[]
+  accounts  Account[]
+  sessions  Session[]
+}
+
+model Problem {
+  id              String        @id @default(cuid())
+  userId          String
+  user            User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  platform        Platform      @default(LEETCODE)
+  problemNumber   Int
+  code            String?
+  title           String
+  url             String
+  difficulty      Difficulty
+  topic           String
+  tags            String[]      @default([])
+  // Questions to answer from memory before rating a review (AI-generated or edited by the user)
+  recallQuestions String[]      @default([])
+
+  dateSolved      DateTime
+  notes           String?       @db.Text
+  customFields    Json?         @default("{}")
+  isFavorite      Boolean       @default(false)
+
+  status          ProblemStatus @default(ACTIVE)
+  currentStep     Int           @default(0)
+  nextRevisionAt  DateTime
+  revisionCount   Int           @default(0)
+
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+
+  revisions       Revision[]
+  lists           ProblemList[]
+
+  @@unique([userId, platform, problemNumber])
+  // One problem/concept per code: stops a double-click from learning a path article twice,
+  // and indexes the code lookups used for learning-path progress. (NULL codes don't clash.)
+  @@unique([userId, platform, code])
+  @@index([userId, status, nextRevisionAt])
+  @@index([userId, topic])
+}
+
+model Revision {
+  id            String       @id @default(cuid())
+  problemId     String
+  problem       Problem      @relation(fields: [problemId], references: [id], onDelete: Cascade)
+
+  revisedAt     DateTime     @default(now())
+  confidence    Confidence
+  type          RevisionType @default(REGULAR)
+  stepBefore    Int
+  stepAfter     Int
+
+  @@index([problemId])
+}
+
+model StreakLog {
+  id          String   @id @default(cuid())
+  userId      String
+  date        DateTime @db.Date
+  completed   Boolean  @default(false)
+
+  @@unique([userId, date])
+}
+
+model UserColumnConfig {
+  id        String   @id @default(cuid())
+  userId    String
+  name      String
+  // text | select | date | checkbox | url
+  type      String   @default("text")
+  options   Json?
+  order     Int
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+}
+
+// Named problem lists, e.g. "Blind 75" or "NeetCode 150"
+model ProblemList {
+  id        String    @id @default(cuid())
+  userId    String
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name      String
+  createdAt DateTime  @default(now())
+  problems  Problem[]
+
+  @@unique([userId, name])
+}
+
+// Fixed-window rate limiting for auth endpoints (key = "<route>:<ip or email>")
+model RateLimit {
+  key     String   @id
+  count   Int      @default(0)
+  resetAt DateTime
+}
+
+// NextAuth.js required models
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}

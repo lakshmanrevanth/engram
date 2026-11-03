@@ -1,0 +1,253 @@
+'use client';
+
+import { useState, useEffect } from 'react';
+import { siteConfig } from '@/config/site';
+
+function formatStars(count: number): string {
+  if (count >= 1_000_000) {
+    return `${(count / 1_000_000).toFixed(1).replace(/\.0$/, '')}M`;
+  }
+  if (count >= 1_000) {
+    return `${(count / 1_000).toFixed(1).replace(/\.0$/, '')}k`;
+  }
+  return count.toString();
+}
+
+type GitHubStarButtonProps = {
+  variant?: 'navbar' | 'sidebar';
+  className?: string;
+  style?: React.CSSProperties;
+};
+
+export function GitHubStarButton({ variant = 'navbar', className, style }: GitHubStarButtonProps = {}) {
+  // Keep the server and first client render identical. The cache is read after
+  // hydration so a previous API response cannot cause a hydration mismatch.
+  // null = count unknown (not loaded yet, or GitHub unavailable).
+  const [stars, setStars] = useState<number | null>(null);
+  const repoUrl = siteConfig.githubUrl;
+  const [isHovered, setIsHovered] = useState(false);
+
+  useEffect(() => {
+    if (!repoUrl) return;
+    let mounted = true;
+    let cachedStars: number | null = null;
+
+    try {
+      const cachedValue = localStorage.getItem('recall_github_stars');
+      const parsedStars = cachedValue === null ? Number.NaN : Number(cachedValue);
+      if (Number.isFinite(parsedStars) && parsedStars >= 0) {
+        cachedStars = parsedStars;
+      }
+    } catch {
+      // The server fallback remains active when storage is unavailable.
+    }
+
+    fetch('/api/github/stars')
+      .then((res) => res.json())
+      .then((data) => {
+        if (!mounted) return;
+        if (typeof data?.stars === 'number') {
+          setStars(data.stars);
+          try {
+            localStorage.setItem('recall_github_stars', String(data.stars));
+          } catch {}
+        } else if (cachedStars !== null) {
+          setStars(cachedStars);
+        }
+      })
+      .catch(() => {
+        if (mounted && cachedStars !== null) setStars(cachedStars);
+      });
+
+    return () => {
+      mounted = false;
+    };
+  }, [repoUrl]);
+
+  // No public repo configured (NEXT_PUBLIC_GITHUB_REPO unset): hide the button.
+  if (!repoUrl) return null;
+
+  const label = stars === null ? `Star ${siteConfig.name} on GitHub` : `Star ${siteConfig.name} on GitHub (${stars} stars)`;
+
+  if (variant === 'sidebar') {
+    return (
+      <a
+        data-sidebar-github
+        href={repoUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label={label}
+        title={label}
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
+        className={className}
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          padding: '7px 12px',
+          borderRadius: 6,
+          fontSize: 13.5,
+          fontWeight: 400,
+          color: isHovered ? 'var(--sidebar-item-hover-color)' : 'var(--text-muted)',
+          background: isHovered ? 'var(--sidebar-item-hover-bg)' : 'transparent',
+          textDecoration: 'none',
+          transition: 'color 0.15s, background 0.15s',
+          cursor: 'pointer',
+          userSelect: 'none',
+          width: '100%',
+          boxSizing: 'border-box',
+          ...style,
+        }}
+      >
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 16 16"
+            fill="currentColor"
+            style={{
+              display: 'block',
+              flexShrink: 0,
+              color: isHovered ? 'var(--sidebar-item-hover-color)' : 'var(--text-subtle)',
+              transition: 'color 0.15s ease',
+            }}
+          >
+            <path d="M8 0c4.42 0 8 3.58 8 8a8.013 8.013 0 0 1-5.45 7.59c-.4.08-.55-.17-.55-.38 0-.27.01-1.13.01-2.2 0-.75-.25-1.23-.54-1.48 1.78-.2 3.65-.88 3.65-3.95 0-.88-.31-1.59-.82-2.15.08-.2.36-1.02-.08-2.12 0 0-.67-.22-2.2.82-.64-.18-1.32-.27-2-.27-.68 0-1.36.09-2 .27-1.53-1.03-2.2-.82-2.2-.82-.44 1.1-.16 1.92-.08 2.12-.51.56-.82 1.28-.82 2.15 0 3.06 1.86 3.75 3.64 3.95-.23.2-.44.55-.51 1.07-.46.21-1.61.55-2.33-.66-.15-.24-.6-.83-1.23-.82-.67.01-.27.38.01.53.34.19.73.9.82 1.13.16.45.68 1.31 2.69.94 0 .67.01 1.3.01 1.49 0 .21-.15.45-.55.38A7.995 7.995 0 0 1 0 8c0-4.42 3.58-8 8-8Z" />
+          </svg>
+          <span>Star on GitHub</span>
+        </div>
+
+        <span
+          style={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: 3,
+            fontSize: 11.5,
+            fontFamily: 'var(--font-geist-mono), monospace',
+            color: isHovered ? 'var(--foreground)' : 'var(--text-muted)',
+            transition: 'color 0.15s ease',
+          }}
+        >
+          <span style={{ color: '#eab308', fontSize: 10 }}>★</span>
+          <span>{stars === null ? '–' : formatStars(stars)}</span>
+        </span>
+      </a>
+    );
+  }
+
+  return (
+    <a
+      data-nav-github
+      href={repoUrl}
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label={label}
+      title={label}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+      style={{
+        display: 'inline-flex',
+        alignItems: 'center',
+        gap: '7px',
+        height: '32px',
+        padding: '0 10px',
+        borderRadius: '8px',
+        background: isHovered ? 'var(--github-star-hover-bg)' : 'var(--github-star-bg)',
+        border: `1px solid ${isHovered ? 'var(--github-star-hover-border)' : 'var(--github-star-border)'}`,
+        color: isHovered ? 'var(--github-star-hover-color)' : 'var(--github-star-color)',
+        fontSize: '12px',
+        fontWeight: 500,
+        fontFamily: 'var(--font-geist-sans), sans-serif',
+        textDecoration: 'none',
+        transition: 'border-color 0.15s ease, background 0.15s ease, color 0.15s ease',
+        cursor: 'pointer',
+        whiteSpace: 'nowrap',
+        userSelect: 'none',
+      }}
+    >
+      {/* GitHub Octocat Icon */}
+      <svg
+        height="15"
+        width="15"
+        viewBox="0 0 16 16"
+        fill="currentColor"
+        style={{
+          display: 'block',
+          flexShrink: 0,
+          color: isHovered ? 'var(--github-star-hover-color)' : 'var(--github-star-color)',
+          transition: 'color 0.15s ease',
+        }}
+      >
+        <path d="M8 0c4.42 0 8 3.58 8 8a8.013 8.013 0 0 1-5.45 7.59c-.4.08-.55-.17-.55-.38 0-.27.01-1.13.01-2.2 0-.75-.25-1.23-.54-1.48 1.78-.2 3.65-.88 3.65-3.95 0-.88-.31-1.59-.82-2.15.08-.2.36-1.02-.08-2.12 0 0-.67-.22-2.2.82-.64-.18-1.32-.27-2-.27-.68 0-1.36.09-2 .27-1.53-1.03-2.2-.82-2.2-.82-.44 1.1-.16 1.92-.08 2.12-.51.56-.82 1.28-.82 2.15 0 3.06 1.86 3.75 3.64 3.95-.23.2-.44.55-.51 1.07-.46.21-1.61.55-2.33-.66-.15-.24-.6-.83-1.23-.82-.67.01-.27.38.01.53.34.19.73.9.82 1.13.16.45.68 1.31 2.69.94 0 .67.01 1.3.01 1.49 0 .21-.15.45-.55.38A7.995 7.995 0 0 1 0 8c0-4.42 3.58-8 8-8Z" />
+      </svg>
+
+      {/* Label (Star) — hidden on small screens for ultra-compact layout */}
+      <span
+        className="nav-github-label"
+        style={{
+          color: isHovered ? 'var(--github-star-hover-color)' : 'var(--github-star-color)',
+          transition: 'color 0.15s ease',
+        }}
+      >
+        Star
+      </span>
+
+      {/* Vertical divider */}
+      <span
+        style={{
+          display: 'inline-block',
+          width: '1px',
+          height: '13px',
+          background: isHovered ? 'var(--github-star-hover-divider)' : 'var(--github-star-divider)',
+          margin: '0 1px',
+          transition: 'background 0.15s ease',
+        }}
+      />
+
+      {/* Star Icon & Dynamic Counter */}
+      <span
+        style={{
+          display: 'inline-flex',
+          alignItems: 'center',
+          gap: '4px',
+        }}
+      >
+        <svg
+          width="12"
+          height="12"
+          viewBox="0 0 24 24"
+          fill="#eab308"
+          stroke="#eab308"
+          strokeWidth="1.5"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          style={{
+            display: 'block',
+            flexShrink: 0,
+            transform: isHovered ? 'scale(1.18) rotate(6deg)' : 'scale(1)',
+            transition: 'transform 0.22s cubic-bezier(0.34, 1.56, 0.64, 1)',
+            filter: isHovered
+              ? 'drop-shadow(0 0 6px rgba(234, 179, 8, 0.65))'
+              : 'drop-shadow(0 0 2.5px rgba(234, 179, 8, 0.35))',
+          }}
+        >
+          <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+        </svg>
+
+        <span
+          style={{
+            fontFamily: 'var(--font-geist-mono), monospace',
+            fontSize: '11px',
+            fontWeight: 600,
+            color: isHovered ? 'var(--github-star-hover-count)' : 'var(--github-star-count)',
+            letterSpacing: '-0.01em',
+            transition: 'color 0.15s ease',
+          }}
+        >
+          {stars === null ? '–' : formatStars(stars)}
+        </span>
+      </span>
+    </a>
+  );
+}

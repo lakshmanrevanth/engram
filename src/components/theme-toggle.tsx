@@ -1,0 +1,215 @@
+'use client';
+
+import * as React from 'react';
+import { useTheme, type Theme } from '@/components/theme-provider';
+import { Sun, Moon, Monitor } from 'lucide-react';
+
+interface ThemeToggleProps {
+  variant?: 'icon' | 'sidebar' | 'segmented' | 'nav' | 'ghost';
+  className?: string;
+  style?: React.CSSProperties;
+}
+
+const emptySubscribe = () => () => {};
+
+export function ThemeToggle({ variant = 'icon', className = '', style }: ThemeToggleProps) {
+  const { theme, resolvedTheme, setTheme } = useTheme();
+  const mounted = React.useSyncExternalStore(emptySubscribe, () => true, () => false);
+
+  const isDark = mounted ? resolvedTheme === 'dark' : true;
+
+  if (variant === 'segmented') {
+    const options: { value: Theme; label: string; icon: React.ReactNode }[] = [
+      { value: 'light', label: 'Light', icon: <Sun size={14} className="text-amber-500" /> },
+      { value: 'dark', label: 'Dark', icon: <Moon size={14} className="text-indigo-400" /> },
+      { value: 'system', label: 'System', icon: <Monitor size={14} /> },
+    ];
+    return (
+      <div
+        role="group"
+        aria-label="Theme"
+        className={`flex items-center gap-2 ${className}`}
+        data-theme-segmented
+      >
+        {options.map((opt) => {
+          const active = mounted && theme === opt.value;
+          return (
+            <button
+              key={opt.value}
+              type="button"
+              aria-pressed={active}
+              onClick={() => setTheme(opt.value)}
+              className={`flex-1 py-2 px-3 rounded-md text-xs font-medium transition-all cursor-pointer border ${
+                active
+                  ? 'bg-primary text-primary-foreground border-primary shadow-sm font-semibold'
+                  : 'bg-secondary text-muted-foreground border-border hover:text-foreground'
+              }`}
+            >
+              <span className="inline-flex items-center gap-1.5 justify-center">
+                {opt.icon}
+                {opt.label}
+              </span>
+            </button>
+          );
+        })}
+      </div>
+    );
+  }
+
+  if (variant === 'sidebar') {
+    return (
+      <button
+        type="button"
+        onClick={() => setTheme(isDark ? 'light' : 'dark')}
+        aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
+        title={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: 10,
+          padding: '7px 12px',
+          borderRadius: 6,
+          fontSize: 13.5,
+          fontWeight: 400,
+          color: 'var(--text-muted)',
+          background: 'transparent',
+          border: 'none',
+          width: '100%',
+          textAlign: 'left',
+          cursor: 'pointer',
+          transition: 'color 0.15s, background 0.15s',
+        }}
+        onMouseEnter={(e) => {
+          e.currentTarget.style.color = 'var(--sidebar-item-hover-color)';
+          e.currentTarget.style.background = 'var(--sidebar-item-hover-bg)';
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.color = 'var(--text-muted)';
+          e.currentTarget.style.background = 'transparent';
+        }}
+      >
+        {isDark ? (
+          <Sun size={16} className="text-amber-400" />
+        ) : (
+          <Moon size={16} className="text-indigo-500" />
+        )}
+        <span>{isDark ? 'Light mode' : 'Dark mode'}</span>
+      </button>
+    );
+  }
+
+  if (variant === 'nav') {
+    return (
+      <button
+        type="button"
+        data-nav-theme
+        onClick={() => setTheme(isDark ? 'light' : 'dark')}
+        aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
+        title={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
+        style={{
+          width: '32px',
+          height: '32px',
+          borderRadius: '8px',
+          border: '1px solid var(--landing-btn-border)',
+          background: 'var(--landing-btn-bg)',
+          color: 'var(--landing-btn-color)',
+          display: 'inline-flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          padding: 0,
+          cursor: 'pointer',
+          transition: 'border-color 0.12s ease, color 0.12s ease, background 0.12s ease',
+          flexShrink: 0,
+          ...style,
+        }}
+        onMouseEnter={(e) => {
+          e.currentTarget.style.borderColor = 'var(--landing-btn-hover-border)';
+          e.currentTarget.style.color = 'var(--landing-btn-hover-color)';
+          e.currentTarget.style.background = 'var(--landing-btn-hover-bg)';
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.borderColor = 'var(--landing-btn-border)';
+          e.currentTarget.style.color = 'var(--landing-btn-color)';
+          e.currentTarget.style.background = 'var(--landing-btn-bg)';
+        }}
+      >
+        {mounted ? (
+          isDark ? (
+            <Sun size={15} style={{ color: 'currentColor', transition: 'color 0.12s ease' }} />
+          ) : (
+            <Moon size={15} style={{ color: 'currentColor', transition: 'color 0.12s ease' }} />
+          )
+        ) : (
+          <span style={{ width: '15px', height: '15px' }} />
+        )}
+      </button>
+    );
+  }
+
+  if (variant === 'ghost') {
+    return (
+      <button
+        type="button"
+        data-theme-ghost
+        onClick={() => setTheme(isDark ? 'light' : 'dark')}
+        aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
+        title={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
+        style={{
+          display: 'inline-flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          width: '28px',
+          height: '28px',
+          borderRadius: '6px',
+          background: 'transparent',
+          border: 'none',
+          color: 'var(--text-muted)',
+          cursor: 'pointer',
+          padding: 0,
+          transition: 'color 0.15s ease, background 0.15s ease',
+          ...style,
+        }}
+        onMouseEnter={(e) => {
+          e.currentTarget.style.color = 'var(--foreground)';
+          e.currentTarget.style.background = 'var(--sidebar-item-hover-bg)';
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.color = 'var(--text-muted)';
+          e.currentTarget.style.background = 'transparent';
+        }}
+      >
+        {mounted ? (
+          isDark ? (
+            <Sun size={16} strokeWidth={1.75} style={{ color: 'currentColor' }} />
+          ) : (
+            <Moon size={16} strokeWidth={1.75} style={{ color: 'currentColor' }} />
+          )
+        ) : (
+          <span style={{ width: 16, height: 16 }} />
+        )}
+      </button>
+    );
+  }
+
+  // Default 'icon' variant
+  return (
+    <button
+      type="button"
+      onClick={() => setTheme(isDark ? 'light' : 'dark')}
+      aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
+      title={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
+      style={style}
+      className={`inline-flex items-center justify-center w-8 h-8 rounded-lg border border-border bg-background/80 hover:bg-accent hover:text-accent-foreground text-muted-foreground hover:text-foreground transition-all cursor-pointer ${className}`}
+    >
+      {mounted ? (
+        isDark ? (
+          <Sun size={15} strokeWidth={1.75} />
+        ) : (
+          <Moon size={15} strokeWidth={1.75} />
+        )
+      ) : (
+        <span className="w-3.5 h-3.5" />
+      )}
+    </button>
+  );
+}

@@ -1,0 +1,95 @@
+# Dependencies
+/node_modules
+/.pnp
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/versions
+
+# Next.js Build & Output
+/.next/
+/out/
+/build
+/dist
+
+# Environment Variables
+.env
+.env*.local
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Vercel & Turbopack
+.vercel
+.turbo
+
+# Testing & Coverage
+/coverage
+/.nyc_output
+*.lcov
+.vitest/
+
+# Playwright e2e
+/e2e/.auth/
+/playwright-report/
+/test-results/
+/blob-report/
+/playwright/.cache/
+
+# Debug Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+lerna-debug.log*
+*.log
+
+# TypeScript
+*.tsbuildinfo
+next-env.d.ts.bak
+
+# OS Metadata
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# IDE & Editor Configurations
+.idea/
+.vscode/
+*.sublime-workspace
+*.sublime-project
+*.swp
+*.swo
+
+# AI Agents, Prompts & Tool Metadata
+.agents/
+.claude/
+.cursor/
+.gemini/
+.windsurf/
+.copilot/
+AGENTS.md
+CLAUDE.md
+GEMINI.md
+skills-lock.json
+prompt.md
+ui.md
+mobile.md
+DEPLOYMENT_READINESS.md
+prompts/
+*.prompt.md
+scratch/
+script.md
+
+# Internal Infrastructure Diagnostics
+docs/infra-diagnostic-report.md
+
+# Feature Implementation Planning
+csv-implementation/

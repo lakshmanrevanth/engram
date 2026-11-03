@@ -1,0 +1,26 @@
+{
+  "name": "Engram — Spaced Repetition for Coding Problems & System Design",
+  "short_name": "Engram",
+  "description": "Learn it once. Keep it for good. Spaced repetition for coding problems and system design.",
+  "start_url": "/dashboard",
+  "display": "standalone",
+  "background_color": "#080808",
+  "theme_color": "#080808",
+  "icons": [
+    {
+      "src": "/icon.png",
+      "sizes": "32x32",
+      "type": "image/png"
+    },
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
